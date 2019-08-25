@@ -13,6 +13,7 @@ exitcode = "shave " + botnick #Text that we will use
 yaml_filepath = "/stash/webstuff/quotas/stashes.yaml"
 stash_filepath = "/stash/webstuff/quotas/quotas.stash"
 delay = 0.6
+secret = "mattsonly"
 
 s.connect((server, 6697)) # Connect to the server using the port 6667
 ircsock = ssl.wrap_socket(s)
@@ -20,9 +21,7 @@ ircsock.send(bytes("USER "+ botnick +" "+ botnick +" "+ botnick + " " + botnick 
 ircsock.send(bytes("NICK "+ botnick +"\n")) # assign the nick to the bot
 
 def joinchan(chan): # join channel(s).
-  ircsock.send(bytes("JOIN "+ chan + " " + "catsonly" +"\r\n")) 
-  ircmsg = ""
-#  ircsock.send(bytes("JOIN "+ "#" + " " + "catsonly" +"\r\n")) 
+  ircsock.send(bytes("JOIN "+ chan + " " + secret +"\r\n")) 
   ircmsg = ""
   while ircmsg.find("End of /NAMES list.") == -1: 
     ircmsg = ircsock.recv(2048).decode("UTF-8")
@@ -45,8 +44,6 @@ def display_stash(stash_name, target = channel):
         stash = quotas[pos:].splitlines()[0]
         stash = stash.split()
         if len(stash) == 10 and stash_name == stash[0]:
-            #sendmsg("|" + nick + ":")
-            #sendmsg("/////////////////")
             sendmsg("|Stash Name........ " + stash[0],target)
             time.sleep(delay)
             sendmsg("|Owner............. " + stash[8],target)
@@ -66,7 +63,6 @@ def display_stash(stash_name, target = channel):
             sendmsg(("|Used (Real Size).. %s, %.2f GB" % (stash[6], (float(stash[6])/1024))),target)
             time.sleep(delay)
             sendmsg(" ",target)
-            #sendmsg("/////////////////")
             return 1
         else:
             #sendmsg(nick + ": Couldn't find stash " + stash_name + ".",target)
